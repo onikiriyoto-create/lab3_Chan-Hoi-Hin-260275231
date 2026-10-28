@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- 🚀 現代文件宣告：強制瀏覽器全面啟用最高規格標準模式渲染，確保跨平台一致性 -->
+<html lang="zh-Hant-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1.12 - Vibe Programming 快速原型建構實務</title>
+    
+    <!-- 引入全球最受歡迎的前端網頁組件庫 Bootstrap 5 (2026 現代純淨去 jQuery 版) -->
+    <link href="https://jsdelivr.net" rel="stylesheet">
+    
+    <style>
+        /* 🚀 全域防禦宣告：鎖定盒模型計算，防止內邊距與邊框撐破網頁版面 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            /* 跨平台安全字型家族 (Font Stack)：相容 Windows、Mac、iOS 與 Android 系統 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang HK", "Helvetica Neue", sans-serif;
+            background-color: #f4f6f9;
+            padding: 60px 20px;
+            line-height: 1.6;
+        }
+
+        .prototype-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 運用 CSS clamp() 智慧函式，控制大標題大小：最小 22px，首選 2.5vw，最大 32px */
+        .page-title {
+            font-size: clamp(22px, 2.5vw + 1rem, 32px);
+            font-weight: 800;
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* ========================================================
+           📦 Vibe 氛圍感商品卡片組件視覺微調 
+           ======================================================== */
+        .product-card {
+            max-width: 380px;
+            margin: 0 auto;
+            border: 1px solid #dee2e6;
+            border-radius: 12px; /* 優雅的大圓角 */
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        /* 當滑鼠懸停時產生的動態微互動效果 */
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.08) !important;
+            /* outline 應用：完全不佔用盒模型物理高度空間的藍色高亮外輪廓 */
+            outline: 3px solid #0056b3;
+        }
+
+        /* 智慧響應式商品標題字體 */
+        .product-title {
+            font-size: clamp(18px, 1.5vw + 1rem, 24px);
+            font-weight: 700;
+            color: #333333;
+        }
+
+        .product-price {
+            font-size: 22px;
+            color: #dc3545; /* 警告/引人注目的鮮紅色 */
+            font-weight: bold;
+        }
+
+        /* 動態非同步訊息輸出盒子樣式 */
+        .cart-status-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            display: none; /* 預設完全隱藏 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="prototype-container">
+        <!-- 網頁頂層標題 -->
+        <h2 class="page-title">Vibe Programming & 高保真快速原型組件展示</h2>
+
+        <!-- 🚀 結構語意化：符合 HTML Living Standard 規範，使用代表獨立內容的 article 標籤 -->
+        <article class="card product-card shadow-sm">
+            
+            <!-- 商品精美預覽圖 (套用 Bootstrap 5 圓角組件) -->
+            <img src="https://unsplash.com" class="card-img-top" style="border-radius: 12px 12px 0 0;" alt="青年學院智能腕錶高畫質示意圖">
+            
+            <div class="card-body p-4">
+                <span class="badge bg-primary mb-2">2026 前端新品</span>
+                
+                <!-- 商品標題 -->
+                <h3 class="product-title" id="targetProductName">Youth 智能核心腕錶</h3>
+                
+                <p class="card-text text-muted font-size-14">
+                    本網頁組件由 Vibe Programming 技術極速建構 [INDEX]。具備完美防爆版盒模型、跨平台安全字型家族與無刷新安全 JavaScript 動態數據渲染 [INDEX, INDEX]。
+                </p>
+                
+                <!-- 價格區塊 -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <span class="product-price">HK$ 1,280</span>
+                    <!-- 互動按鈕 (結構與邏輯分離，嚴禁編寫行內 onclick) -->
+                    <button type="button" id="addToCartBtn" class="btn btn-dark px-4 fw-bold">加入購物車</button>
+                </div>
+
+                <!-- 🚀 安全非同步動態輸出核心：專門為 JavaScript 預留的完全乾淨的區塊 -->
+                <div id="asyncCartMessage" class="cart-status-box alert-success text-success"></div>
+            </div>
+
+        </article>
+    </div>
+
+    <!-- ========================================================
+         🚀 JavaScript 邏輯層 (100% 結構與邏輯分離事件觸發)
+         ======================================================== -->
+    <script>
+        // 1. 精準抓取 DOM 核心元件
+        const cartButton = document.getElementById('addToCartBtn');
+        const productNameHeading = document.getElementById('targetProductName');
+        const statusMessageDisplay = document.getElementById('asyncCartMessage');
+
+        // 2. 綁定現代事件監聽器 (Event Listener)，捕捉使用者的 click 點擊事件 [INDEX]
+        cartButton.addEventListener('click', function() {
+            
+            // 3. 獲取商品標題文字，並呼跨平台清除文字前後的所有空白鍵 [INDEX]
+            const finalProductName = productNameHeading.textContent.trim();
+
+            // 4. 計算當前時間戳記 (模擬真實系統運行)
+            const currentTime = new Date().toLocaleTimeString();
+
+            // 5. 動態拼裝客製化輸出字串
+            const successOutputText = `🎉 成功加入！【${finalProductName}】已於 ${currentTime} 安全放入購物車。(網頁無重新整理)`;
+
+            // 6. 🚀 2026 終極安全防護：死守 textContent 渲染。
+            // 瀏覽器會強制將此字串 100% 轉化為純文字，徹底摧毀任何潛在的惡意 HTML 注入或 XSS 攻擊漏洞 [INDEX]！
+            statusMessageDisplay.textContent = successOutputText;
+
+            // 7. 改變 CSS 樣式，將隱藏的輸出盒子瞬間漂亮地顯示出來
+            statusMessageDisplay.style.display = "block";
+        });
+    </script>
+</body>
+</html>
